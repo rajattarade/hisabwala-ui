@@ -1,0 +1,35 @@
+
+            <!-- Create Party View -->
+            <div ng-show="currentView === 'create'" class="text-center slide-up">
+                <div class="glass-effect rounded-3xl p-8 max-w-md mx-auto">
+                    <h2 class="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                        Create New Party
+                    </h2>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Party Name</label>
+                            <input ng-model="partyName" type="text" placeholder="Enter party name..."
+                                   class="w-full h-14 bg-gray-900 border border-gray-700 rounded-xl px-4 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all">
+                        </div>
+                        
+                        <div ng-show="generatedCode" class="fade-in">
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Your Party Code</label>
+                            <div class="bg-gray-900 border border-gray-700 rounded-xl p-4">
+                                <span class="text-2xl font-mono font-bold text-blue-400 tracking-wider"><!--{{generatedCode}}--></span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex space-x-4">
+                            <button ng-click="createParty()" ng-disabled="!partyName"
+                                    class="flex-1 h-12 bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:from-blue-700 hover:to-blue-600 transition-all">
+                                Generate Code
+                            </button>
+                            <button ng-click="goHome()"
+                                    class="h-12 px-6 glass-effect rounded-xl font-semibold hover:bg-gray-800 transition-all">
+                                Back
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>

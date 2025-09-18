@@ -1,0 +1,32 @@
+<!-- Enter Code View -->
+            <div ng-show="currentView === 'enter'" class="text-center slide-up">
+                <div class="glass-effect rounded-3xl p-8 max-w-md mx-auto">
+                    <h2 class="text-3xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                        Enter Party Code
+                    </h2>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Party Code</label>
+                            <input ng-model="enteredCode" type="text" placeholder="XXX-XXX-XXX" maxlength="11"
+                                   class="w-full h-14 bg-gray-900 border border-gray-700 rounded-xl px-4 text-white placeholder-gray-500 font-mono text-center text-lg tracking-wider focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all">
+                        </div>
+                        
+                        <div ng-show="errorMessage" class="text-red-400 text-sm fade-in">
+                            <!--{{errorMessage}}-->
+                        </div>
+                        
+                        <div class="flex space-x-4">
+                            <button ng-click="enterParty()" ng-disabled="!enteredCode"
+                                    class="flex-1 h-12 bg-gradient-to-r from-purple-600 to-purple-500 rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:from-purple-700 hover:to-purple-600 transition-all">
+                                Join Party
+                            </button>
+                            <button ng-click="goHome()"
+                                    class="h-12 px-6 glass-effect rounded-xl font-semibold hover:bg-gray-800 transition-all">
+                                Back
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End of Enter Code View -->

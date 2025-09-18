@@ -1,0 +1,48 @@
+<body>
+    <div ng-app="partyApp" ng-controller="PartyController" class="relative">
+        <!-- Background Pattern -->
+        <div class="fixed inset-0 opacity-10">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-900 via-black to-purple-900"></div>
+            <div class="absolute top-20 left-20 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+            <div class="absolute bottom-20 right-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+        </div>
+
+        <!-- Main Container -->
+        <div class="relative z-10 min-h-screen flex items-center justify-center p-6">
+            
+            <!-- Home View -->
+            <div ng-show="currentView === 'home'" class="text-center fade-in">
+                <div class="mb-12">
+                    <h1 class="text-6xl md:text-8xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                        PARTY
+                    </h1>
+                    <p class="text-xl text-gray-400 font-light">Connect, Share, Celebrate</p>
+                </div>
+                
+                <div class="space-y-6">
+                    <button ng-click="showCreateParty()" 
+                            class="group relative w-80 h-16 glass-effect rounded-2xl text-lg font-semibold transition-all duration-300 hover:scale-105 hover:glow-effect">
+                        <span class="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-500 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                        <span class="relative z-10 flex items-center justify-center h-full">
+                            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Create Party Code
+                        </span>
+                    </button>
+                    
+                    <button ng-click="showEnterCode()" 
+                            class="group relative w-80 h-16 glass-effect rounded-2xl text-lg font-semibold transition-all duration-300 hover:scale-105 hover:glow-effect">
+                        <span class="absolute inset-0 bg-gradient-to-r from-purple-600 to-purple-500 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                        <span class="relative z-10 flex items-center justify-center h-full">
+                            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
+                            </svg>
+                            Enter Party Code
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
