@@ -9,26 +9,44 @@
                     <div class="space-y-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-400 mb-2">Party Name</label>
-                            <input ng-model="partyName" type="text" placeholder="Enter party name..."
+                            <input [formControl]="partyName" type="text" placeholder="Enter party name..."
                                    class="w-full h-14 bg-gray-900 border border-gray-700 rounded-xl px-4 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all">
                         </div>
                         
                         <div ng-show="generatedCode" class="fade-in">
                             <label class="block text-sm font-medium text-gray-400 mb-2">Your Party Code</label>
                             <div class="bg-gray-900 border border-gray-700 rounded-xl p-4">
-                                <span class="text-2xl font-mono font-bold text-blue-400 tracking-wider"><!--{{generatedCode}}--></span>
+                                <span class="text-2xl font-mono font-bold text-blue-400 tracking-wider">{{ partyCode() }}</span>
                             </div>
                         </div>
                         
                         <div class="flex space-x-4">
-                            <button ng-click="createParty()" ng-disabled="!partyName"
-                                    class="flex-1 h-12 bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:from-blue-700 hover:to-blue-600 transition-all">
-                                Generate Code
-                            </button>
-                            <button ng-click="goHome()"
-                                    class="h-12 px-6 glass-effect rounded-xl font-semibold hover:bg-gray-800 transition-all">
-                                Back
-                            </button>
+                            @if(!partyCode())
+                            {
+                                <button (click)="createPartyCode()" ng-disabled="!partyName"
+                                        class="flex-1 h-12 bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:from-blue-700 hover:to-blue-600 transition-all">
+                                    Create Party
+                                </button>
+                                <button (click)="closeCreateParty()"
+                                    class="h-12 px-6 bg-gradient-to-r from-slate-600 to-slate-500 rounded-xl font-semibold 
+                                         hover:from-slate-700 hover:to-slate-600 
+                                         disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+                                    Back
+                                </button>
+                            }
+                            @else
+                            {
+                                <button (click)="copyCode()"
+                                    class="flex-1 h-12 bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:from-blue-700 hover:to-blue-600 transition-all"> 
+                                    Copy Code
+                                </button>
+                                <button (click)="enterRoom()"
+                                class="flex-1 h-12 bg-gradient-to-r from-emerald-600 to-emerald-500 rounded-xl font-semibold 
+                                              hover:from-emerald-700 hover:to-emerald-600 
+                                              disabled:opacity-50 disabled:cursor-not-allowed transition-all">        
+                                    Enter Party Room!
+                                </button>
+                            }
                         </div>
                     </div>
                 </div>
