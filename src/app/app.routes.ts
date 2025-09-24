@@ -6,5 +6,5 @@ import { PartyHomeComponent } from './components/party-home/party-home.component
 
 export const routes: Routes = [
   { path: '', component: HomePageComponent },
-  { path: 'party/:code', component: PartyHomeComponent },
+  { path: 'party/:partyCode', component: PartyHomeComponent },
 ];

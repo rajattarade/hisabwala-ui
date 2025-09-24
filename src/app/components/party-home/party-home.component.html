@@ -1,23 +1,180 @@
+<div class="min-h-screen bg-black">
+  <!-- Fixed Header -->
+  <div class="bg-gray-950 border-b border-black px-6 py-4 sticky top-0 z-10">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-white">{{ partyName() }}</h1>
+          <p class="text-gray-400 text-sm">Party Code: <span class="font-mono bg-gray-700 px-2 py-1 rounded">{{ partyCode() }}</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
 
-            <!-- Welcome View -->
-            <div ng-show="currentView === 'welcome'" class="text-center slide-up">
-                <div class="glass-effect rounded-3xl p-8 max-w-md mx-auto">
-                    <div class="mb-6">
-                        <div class="w-20 h-20 bg-gradient-to-r from-green-400 to-blue-400 rounded-full mx-auto mb-4 flex items-center justify-center">
-                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                        </div>
-                        <h2 class="text-3xl font-bold mb-2 text-green-400">Welcome!</h2>
-                        <p class="text-xl text-gray-300">You've joined</p>
-                        <p class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                            <!--{{welcomePartyName}}-->
-                        </p>
-                    </div>
-                    
-                    <button ng-click="goHome()"
-                            class="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all">
-                        Create Another Party
-                    </button>
-                </div>
+  <div class="max-w-6xl mx-auto px-6 py-8">
+    <!-- Tab Navigation -->
+    <div class="flex space-x-1 bg-gray-700 rounded-lg p-1 mb-8">
+      <button 
+        (click)="setActiveTab('expenses')"
+        [class]="activeTab() === 'expenses' ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white'"
+        class="flex-1 py-3 px-6 rounded-md transition-all duration-200 font-medium">
+        Expenses
+      </button>
+      <button 
+        (click)="setActiveTab('contributions')"
+        [class]="activeTab() === 'contributions' ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white'"
+        class="flex-1 py-3 px-6 rounded-md transition-all duration-200 font-medium">
+        Contributions
+      </button>
+    </div>
+
+    <!-- Expenses Tab -->
+    <div *ngIf="activeTab() === 'expenses'" class="space-y-4">
+      <div class="grid gap-4">
+        <!-- Existing Expenses -->
+        <div *ngFor="let expense of expenses()" 
+             class="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors">
+          <div class="flex justify-between items-start mb-4">
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold text-white mb-1">{{ expense.name }}</h3>
+              <p class="text-gray-400">Made by {{ expense.person }}</p>
             </div>
+            <div class="text-right">
+              <span class="text-2xl font-bold text-green-400">${{ expense.amount }}</span>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span *ngFor="let tag of expense.tags" 
+                  class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-900/30 text-blue-300 border border-blue-700/30">
+              {{ tag }}
+              <button (click)="removeTagFromExistingExpense(expense.id, tag)" 
+                      class="ml-2 hover:text-red-400 transition-colors">×</button>
+            </span>
+          </div>
+        </div>
+
+        <!-- New Expense Row (when editing) -->
+        <div *ngIf="isAddingExpense()" 
+             class="bg-gray-800 rounded-lg p-6 border-2 border-blue-500">
+          <div class="flex justify-between items-start mb-4">
+            <div class="flex-1 space-y-3">
+              <input 
+                [(ngModel)]="newExpense.name"
+                placeholder="Expense name"
+                class="w-full bg-gray-900 border border-gray-700 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <input 
+                [(ngModel)]="newExpense.person"
+                placeholder="Your name"
+                class="w-full bg-gray-900 border border-gray-700 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="ml-4">
+              <input 
+                [(ngModel)]="newExpense.amount"
+                type="number"
+                placeholder="Amount"
+                class="w-24 bg-gray-900 border border-gray-700 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right">
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span *ngFor="let tag of newExpense.tags" 
+                  class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-900/30 text-blue-300 border border-blue-700/30">
+              {{ tag }}
+              <button (click)="removeTagFromExpense(tag)" class="ml-2 hover:text-red-400 transition-colors">×</button>
+            </span>
+            <button *ngFor="let tag of availableTagsForExpense()" 
+                    (click)="addTagToExpense(tag)"
+                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-700/30 text-gray-400 border border-gray-600/30 hover:bg-blue-900/30 hover:text-blue-300 transition-colors">
+              + {{ tag }}
+            </button>
+          </div>
+          <div class="flex space-x-3">
+            <button (click)="saveExpense()" 
+                    class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors">
+              Save
+            </button>
+            <button (click)="cancelAddExpense()" 
+                    class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md transition-colors">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contributions Tab -->
+    <div *ngIf="activeTab() === 'contributions'" class="space-y-4">
+      <div class="grid gap-4">
+        <!-- Existing Contributions -->
+        <div *ngFor="let contribution of contributions()" 
+             class="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors">
+          <div class="flex justify-between items-start mb-4">
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold text-white mb-1">{{ contribution.person }}</h3>
+              <p class="text-gray-400">Wants to contribute</p>
+            </div>
+            <div class="text-right">
+              <span class="text-2xl font-bold text-blue-400">${{ contribution.amount }}</span>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span *ngFor="let tag of contribution.tags" 
+                  class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-900/30 text-purple-300 border border-purple-700/30">
+              {{ tag }}
+              <button (click)="removeTagFromExistingContribution(contribution.id, tag)" 
+                      class="ml-2 hover:text-red-400 transition-colors">×</button>
+            </span>
+          </div>
+        </div>
+
+        <!-- New Contribution Row (when editing) -->
+        <div *ngIf="isAddingContribution()" 
+             class="bg-gray-800 rounded-lg p-6 border-2 border-purple-500">
+          <div class="flex justify-between items-start mb-4">
+            <div class="flex-1 space-y-3">
+              <input 
+                [(ngModel)]="newContribution.person"
+                placeholder="Your name"
+                class="w-full bg-gray-900 border border-gray-700 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
+            </div>
+            <div class="ml-4">
+              <input 
+                [(ngModel)]="newContribution.amount"
+                type="number"
+                placeholder="Amount"
+                class="w-24 bg-gray-900 border border-gray-700 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 text-right">
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span *ngFor="let tag of newContribution.tags" 
+                  class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-900/30 text-purple-300 border border-purple-700/30">
+              {{ tag }}
+              <button (click)="removeTagFromContribution(tag)" class="ml-2 hover:text-red-400 transition-colors">×</button>
+            </span>
+          </div>
+          <div class="flex space-x-3">
+            <button (click)="saveContribution()" 
+                    class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors">
+              Save
+            </button>
+            <button (click)="cancelAddContribution()" 
+                    class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md transition-colors">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex space-x-4 mt-8 pt-6 border-t border-gray-700">
+      <button (click)="startAddingExpense()" 
+              class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors">
+        I made an expense
+      </button>
+      <button (click)="startAddingContribution()" 
+              class="flex-1 bg-purple-600 hover:purple-700 text-white font-medium py-3 px-6 rounded-lg transition-colors">
+        I want to contribute
+      </button>
+    </div>
+  </div>
+</div>
