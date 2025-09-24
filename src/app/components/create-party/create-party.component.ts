@@ -28,8 +28,7 @@ export class CreatePartyComponent {
   }
 
   closeCreateParty() {
-    console.log("Close Create Party Clicked");
-    this.closed.emit();  // Notify parent
+    this.closed.emit();
   }
 
   copyCode() {
@@ -38,7 +37,7 @@ export class CreatePartyComponent {
     }
   }
 
-  enterRoom() {
+  enterPartyRoom() {
     if (this.partyCode()) {
       this.router.navigate([`/party/${this.partyCode()}`]);
     }

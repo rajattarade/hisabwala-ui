@@ -1,26 +1,36 @@
 import { Component } from '@angular/core';
 import { CreatePartyComponent } from "../create-party/create-party.component";
+import { EnterPartyComponent } from "../enter-party/enter-party.component";
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [CreatePartyComponent],
+  imports: [CreatePartyComponent, EnterPartyComponent],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css'
 })
 export class HomePageComponent {
   
   createPartyVisible : boolean = false;
+  enterPartyVisible : boolean = false;
 
   openCreateParty()
   {
     this.createPartyVisible = true;
-    console.log("Create Party Clicked");
   }
-
+ 
   closeCreateParty()
   {
     this.createPartyVisible = false;
-    console.log("Create Party Clicked");
+  }
+
+  openEnterCode()
+  {
+    this.enterPartyVisible = true;
+  }
+
+  closeEnterCode()
+  {
+    this.enterPartyVisible = false;
   }
 }
