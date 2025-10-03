@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Contribution } from '../interfaces/IContribution';
 import { Expense } from '../interfaces/IExpenses';
 import { PartyInfo } from '../interfaces/IPartyInfo';
+import { firstValueFrom } from 'rxjs';
+import { ApiService } from './api.service';
 
 
 // Mock data
@@ -26,7 +28,7 @@ export class PartyCodeGeneratorService {
 
   parties = [{partyName: 'Weekend Trip Expenses', partyCode: 'ABCD-1234', expenses: mockExpenses, contributions: mockContributions}];
 
-  constructor() { }
+  constructor(private api:ApiService) { }
 
     getTags(): string[]
     {
@@ -53,12 +55,21 @@ export class PartyCodeGeneratorService {
       }
     }
 
-    createPartyCode(partyName: string): string {
-      const prefix = partyName.trim().toUpperCase().replace(/\s+/g, '').slice(0, 4);
-      const randomNum = Math.floor(1000 + Math.random() * 9000); // 4-digit
-      const partyCode = `${prefix}-${randomNum}`;
-      this.parties.push({partyName: partyName, partyCode: partyCode, expenses: [], contributions: []});
-      console.log(this.parties);
-      return partyCode;
+    async createPartyCode(partyName: string): Promise<string> 
+    {
+      const result = await firstValueFrom(
+        this.api.generatePartyCode({ partyName })
+        );
+
+      if (result.success) 
+      {
+        const code = result.data!.partyCode;
+        this.parties.push({ partyName, partyCode: code, expenses: [], contributions: [] });
+        return code;
+      } 
+      else 
+      {
+        throw new Error(result.errors?.join(', ') ?? 'Failed to generate code');
+      }
     }
 }

@@ -19,11 +19,11 @@ export class CreatePartyComponent {
   constructor(private partyCodeService: PartyCodeGeneratorService,
               private router: Router) { }
 
-  createPartyCode() 
+  async createPartyCode() 
   {
     console.log(this.partyName.value);
     if (this.partyName.valid) {
-      this.partyCode.set(this.partyCodeService.createPartyCode(this.partyName.value));
+      this.partyCode.set(await this.partyCodeService.createPartyCode(this.partyName.value));
     }
   }
 
