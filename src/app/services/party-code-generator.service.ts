@@ -39,7 +39,7 @@ export class PartyCodeGeneratorService {
     {
       console.log(this.parties);
       console.log(partyCode);
-      const party = this.parties.find(p => p.partyCode === partyCode);
+      const party = this.parties.find(p => p.partyCode.toLowerCase() === partyCode.toLowerCase());
       console.log(party);
       if (party) {
         return {

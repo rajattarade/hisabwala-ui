@@ -21,7 +21,6 @@ export class CreatePartyComponent {
 
   async createPartyCode() 
   {
-    console.log(this.partyName.value);
     if (this.partyName.valid) {
       this.partyCode.set(await this.partyCodeService.createPartyCode(this.partyName.value));
     }
