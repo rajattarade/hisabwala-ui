@@ -3,11 +3,10 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-enter-party',
-  standalone: true,
-  imports: [ReactiveFormsModule],
-  templateUrl: './enter-party.component.html',
-  styleUrl: './enter-party.component.css'
+    selector: 'app-enter-party',
+    imports: [ReactiveFormsModule],
+    templateUrl: './enter-party.component.html',
+    styleUrl: './enter-party.component.css'
 })
 export class EnterPartyComponent {
   @Output() closed = new EventEmitter<void>();

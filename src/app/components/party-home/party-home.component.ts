@@ -8,11 +8,10 @@ import { ActivatedRoute } from '@angular/router';
 import { PartyInfo } from '../../interfaces/IPartyInfo';
 
 @Component({
-  selector: 'app-party-home',
-  standalone: true,
-  imports: [FormsModule, CommonModule],
-  templateUrl: './party-home.component.html',
-  styleUrl: './party-home.component.css'
+    selector: 'app-party-home',
+    imports: [FormsModule, CommonModule],
+    templateUrl: './party-home.component.html',
+    styleUrl: './party-home.component.css'
 })
 
 export class PartyHomeComponent implements OnInit {

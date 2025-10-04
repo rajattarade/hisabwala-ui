@@ -3,11 +3,10 @@ import { CreatePartyComponent } from "../create-party/create-party.component";
 import { EnterPartyComponent } from "../enter-party/enter-party.component";
 
 @Component({
-  selector: 'app-home-page',
-  standalone: true,
-  imports: [CreatePartyComponent, EnterPartyComponent],
-  templateUrl: './home-page.component.html',
-  styleUrl: './home-page.component.css'
+    selector: 'app-home-page',
+    imports: [CreatePartyComponent, EnterPartyComponent],
+    templateUrl: './home-page.component.html',
+    styleUrl: './home-page.component.css'
 })
 export class HomePageComponent {
   
