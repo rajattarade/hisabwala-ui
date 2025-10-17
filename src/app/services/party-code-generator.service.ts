@@ -1,21 +1,24 @@
 import { Injectable } from '@angular/core';
 import { Contribution } from '../interfaces/IContribution';
 import { Expense } from '../interfaces/IExpenses';
-import { PartyInfo } from '../interfaces/IPartyInfo';
+import { PartyInfoDTO } from '../interfaces/IPartyInfoDTO';
 import { firstValueFrom } from 'rxjs';
 import { ApiService } from './api.service';
+import { ErrorCodes } from '../common/errors';
+import { Result } from '../models/Result';
+import { PartyCodeDTO } from '../interfaces/IPartyCodeDTO';
 
 
 // Mock data
 const mockExpenses: Expense[] = [
-  { id: 1, name: 'Dinner at Restaurant', amount: 120, person: 'Alice', tags: ['Food', 'Dinner'] },
-  { id: 2, name: 'Uber Ride', amount: 25, person: 'Bob', tags: ['Transport'] },
-  { id: 3, name: 'Movie Tickets', amount: 60, person: 'Charlie', tags: ['Entertainment'] }
+  { id: 1, name: 'Dinner at Restaurant', amount: 120, paidBy: 'Alice', tag: 'Food'},
+  { id: 2, name: 'Uber Ride', amount: 25, paidBy: 'Bob', tag: 'Transport' },
+  { id: 3, name: 'Movie Tickets', amount: 60, paidBy: 'Charlie', tag: 'Entertainment' }
 ];
 
 const mockContributions: Contribution[] = [
-  { id: 1, person: 'David', amount: 50, tags: ['Food', 'Dinner'] },
-  { id: 2, person: 'Eve', amount: 30, tags: ['Transport', 'Entertainment'] }
+  { id: 1, name: 'David', amount: 50, tags: ['Food', 'Dinner'] },
+  { id: 2, name: 'Eve', amount: 30, tags: ['Transport', 'Entertainment'] }
 ];
 
 const allTags = ['Food', 'Transport', 'Entertainment', 'Snacks', 'Drinks', 'Shopping', 'Smokes', 'Accommodation', 'Miscellaneous'];
@@ -35,41 +38,40 @@ export class PartyCodeGeneratorService {
       return allTags;
     }
 
-    getPartyInfo(partyCode: string): PartyInfo | null
+    async getPartyInfo(partyCode: string): Promise<Result<PartyInfoDTO>>
     {
-      console.log(this.parties);
-      console.log(partyCode);
-      const party = this.parties.find(p => p.partyCode.toLowerCase() === partyCode.toLowerCase());
-      console.log(party);
-      if (party) {
-        return {
-          partyName: party.partyName, 
-          expenses: party.expenses, 
-          contributions: party.contributions,
-          partyCode: party.partyCode
-        };
-      }
-      else
-      {
-        return null;
-      }
+      const result = await firstValueFrom(this.api.getPartyInformation({ partyCode }));
+
+      const resultDTO:Result<PartyInfoDTO> = {success: true, data: result.data};
+
+      return resultDTO;
     }
 
-    async createPartyCode(partyName: string): Promise<string> 
+    async createPartyCode(partyName: string): Promise<Result<PartyCodeDTO>> 
     {
-      const result = await firstValueFrom(
-        this.api.generatePartyCode({ partyName })
-        );
+      try {
+        const result = await firstValueFrom(
+          this.api.generatePartyCode({ partyName })
+         );
 
-      if (result.success) 
+        if (result.success) 
+        {
+          const code = result.data!.partyCode;
+          this.parties.push({ partyName, partyCode: code, expenses: [], contributions: [] });
+          const resultDTO:Result<PartyCodeDTO> = {success: true, data: {
+            partyCode: code,
+            partyName: '',
+            createdDateTime: ''
+          }};
+          return resultDTO;
+        }
+        else{
+          return { success: false, data: {partyCode:'', partyName:'', createdDateTime:''} };
+        }
+      }
+      catch (error)
       {
-        const code = result.data!.partyCode;
-        this.parties.push({ partyName, partyCode: code, expenses: [], contributions: [] });
-        return code;
-      } 
-      else 
-      {
-        throw new Error(result.errors?.join(', ') ?? 'Failed to generate code');
+        return { success: false, data: {partyCode:'', partyName:'', createdDateTime:''} };
       }
     }
 }

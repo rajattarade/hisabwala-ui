@@ -1,6 +1,6 @@
 interface Contribution {
   id: number;
-  person: string;
+  name: string;
   amount: number;
   tags: string[];
 }

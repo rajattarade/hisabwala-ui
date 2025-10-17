@@ -5,7 +5,7 @@ import { Expense } from '../../interfaces/IExpenses';
 import { Contribution } from '../../interfaces/IContribution';
 import { PartyCodeGeneratorService } from '../../services/party-code-generator.service';
 import { ActivatedRoute } from '@angular/router';
-import { PartyInfo } from '../../interfaces/IPartyInfo';
+import { PartyInfoDTO } from '../../interfaces/IPartyInfoDTO';
 
 @Component({
     selector: 'app-party-home',
@@ -19,10 +19,12 @@ export class PartyHomeComponent implements OnInit {
     private route: ActivatedRoute
   ) { }
   
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.allTags.set(this.partyService.getTags());
     const partyCode = this.route.snapshot.paramMap.get('partyCode') ?? '';
-    const partyInfo: PartyInfo | null = this.partyService.getPartyInfo(partyCode);
+    const result = await this.partyService.getPartyInfo(partyCode);
+    const partyInfo: PartyInfoDTO = result.data!;
+
     console.log(partyInfo);
     if (partyInfo) {
       this.partyCode.set(partyInfo.partyCode);
@@ -42,17 +44,19 @@ export class PartyHomeComponent implements OnInit {
   isAddingExpense = signal(false);
   isAddingContribution = signal(false);
   
-  newExpense = {
+  newExpense: Expense = {
+    id: 0,
     name: '',
-    amount: null as number | null,
-    person: '',
-    tags: [] as string[]
+    amount: 0,
+    paidBy: '',
+    tag: ''
   };
   
-  newContribution = {
-    person: '',
-    amount: null as number | null,
-    tags: [] as string[]
+  newContribution:Contribution = {
+    id: 0,
+    name: '',
+    amount: 0,
+    tags: [] as string[],
   };
 
   setActiveTab(tab: 'expenses' | 'contributions') {
@@ -75,29 +79,30 @@ export class PartyHomeComponent implements OnInit {
 
   resetNewExpense() {
     this.newExpense = {
+      id: 0,
       name: '',
-      amount: null,
-      person: '',
-      tags: []
+      amount: 0,
+      paidBy: '',
+      tag: ''
     };
   }
 
   resetNewContribution() {
     this.newContribution = {
-      person: '',
-      amount: null,
+      id: 0,
+      name: '',
+      amount: 0,
       tags: [...this.allTags().values()]
     };
   }
 
   addTagToExpense(tag: string) {
-    if (!this.newExpense.tags.includes(tag)) {
-      this.newExpense.tags.push(tag);
-    }
+      this.newExpense.tag = tag;
+      console.log(this.newExpense.tag);
   }
 
   removeTagFromExpense(tag: string) {
-    this.newExpense.tags = this.newExpense.tags.filter(t => t !== tag);
+    this.newExpense.tag = '';
   }
 
   removeTagFromContribution(tag: string) {
@@ -105,18 +110,18 @@ export class PartyHomeComponent implements OnInit {
   }
 
   availableTagsForExpense(): string[] {
-    return this.allTags().filter(tag => !this.newExpense.tags.includes(tag));
+    return this.allTags().filter(tag => this.newExpense.tag != tag);
   }
 
   saveExpense() {
-    if (this.newExpense.name && this.newExpense.amount && this.newExpense.person) {
+    if (this.newExpense.name && this.newExpense.amount && this.newExpense.paidBy) {
       const newId = Math.max(...this.expenses().map(e => e.id)) + 1;
       const expense: Expense = {
         id: newId,
         name: this.newExpense.name,
         amount: this.newExpense.amount,
-        person: this.newExpense.person,
-        tags: [...this.newExpense.tags]
+        paidBy: this.newExpense.paidBy,
+        tag: this.newExpense.tag
       };
       this.expenses.set([...this.expenses(), expense]);
       this.cancelAddExpense();
@@ -124,11 +129,11 @@ export class PartyHomeComponent implements OnInit {
   }
 
   saveContribution() {
-    if (this.newContribution.person && this.newContribution.amount) {
+    if (this.newContribution.name && this.newContribution.amount) {
       const newId = Math.max(...this.contributions().map(c => c.id)) + 1;
       const contribution: Contribution = {
         id: newId,
-        person: this.newContribution.person,
+        name: this.newContribution.name,
         amount: this.newContribution.amount,
         tags: [...this.newContribution.tags]
       };
@@ -152,7 +157,7 @@ export class PartyHomeComponent implements OnInit {
       if (expense.id === expenseId) {
         return {
           ...expense,
-          tags: expense.tags.filter(t => t !== tag)
+          tag: ''
         };
       }
       return expense;

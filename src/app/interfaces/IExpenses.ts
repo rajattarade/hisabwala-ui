@@ -2,8 +2,8 @@ interface Expense {
   id: number;
   name: string;
   amount: number;
-  person: string;
-  tags: string[];
+  paidBy: string;
+  tag: string;
 }
 
 export { Expense };

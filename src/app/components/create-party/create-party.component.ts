@@ -14,6 +14,7 @@ export class CreatePartyComponent {
 
   partyName = new FormControl('', { nonNullable: true, validators: [Validators.required] });
   partyCode = signal<string | null>(null);
+  validCodeGenerated = signal<boolean>(false);
 
   constructor(private partyCodeService: PartyCodeGeneratorService,
               private router: Router) { }
@@ -21,7 +22,11 @@ export class CreatePartyComponent {
   async createPartyCode() 
   {
     if (this.partyName.valid) {
-      this.partyCode.set(await this.partyCodeService.createPartyCode(this.partyName.value));
+      const result =  await this.partyCodeService.createPartyCode(this.partyName.value);  
+      if (result.success) {
+        this.partyCode.set(result.data!.partyCode);
+        this.validCodeGenerated.set(true);
+      }
     }
   }
 
